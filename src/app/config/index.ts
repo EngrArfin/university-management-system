@@ -1,5 +1,4 @@
-import dotenv, { config } from 'dotenv';
-import mongoose from 'mongoose';
+import dotenv from 'dotenv';
 import path from 'path';
 
 dotenv.config({ path: path.join((process.cwd(), '.env')) });
