@@ -25,11 +25,12 @@ export type Student = {
   email: string;
   contractNo: string;
   emergencyContractNo: string;
+  dateOfBirth?: string;
   bloodGroup?: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
   presentAddress: string;
   permanentAddress: string;
-  gurdiant: Gurdian;
+  guardian: Gurdian;
   localGurdiant: LocalGurdian;
   profileImg: string;
-  isActive: 'active' | 'inactive';
+  isActive: 'active' | 'blocked';
 };
