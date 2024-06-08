@@ -1,3 +1,9 @@
+export type UserName = {
+  firstName: string;
+  middleName: string;
+  lastName: string;
+};
+
 export type Gurdian = {
   fatherName: string;
   fatherOcupation: string;
@@ -6,11 +12,7 @@ export type Gurdian = {
   mothherOcupation: string;
   mothherContractNo: string;
 };
-export type UserName = {
-  firstName: string;
-  middleName: string;
-  lastName: string;
-};
+
 export type LocalGurdian = {
   name: string;
   occupation: string;
