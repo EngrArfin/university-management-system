@@ -1,3 +1,4 @@
+import validator from 'validator';
 import { Schema, model } from 'mongoose';
 import {
   Gurdian,
@@ -28,6 +29,10 @@ const userNameSchema = new Schema<UserName>({
     type: String,
     trim: true,
     required: [true, 'Last Name is required'],
+    validate: {
+      validator: (value: string) => validator.isAlphanumeric(value),
+      message: '{VALUE} is not a valid last name',
+    },
   },
 });
 
@@ -87,7 +92,16 @@ const studentSchema = new Schema<Student>({
     },
     required: [true, 'Gender is required'],
   },
-  email: { type: String, required: [true, 'Email is required'], unique: true },
+  email: {
+    type: String,
+    required: [true, 'Email is required'],
+    unique: true,
+
+    validate: {
+      validator: (value: string) => validator.isEmail(value),
+      message: '{VALUE} is not a valid email type',
+    },
+  },
   dateOfBirth: { type: String, required: [true, 'Date of Birth is required'] },
   presentAddress: {
     type: String,
