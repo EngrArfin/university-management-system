@@ -98,10 +98,10 @@ const studentSchema = new Schema<Student>({
     required: [true, 'Email is required'],
     unique: true,
 
-    validate: {
+    /* validate: {
       validator: (value: string) => validator.isEmail(value),
       message: '{VALUE} is not a valid email type',
-    },
+    }, */
   },
   dateOfBirth: { type: String, required: [true, 'Date of Birth is required'] },
   presentAddress: {
