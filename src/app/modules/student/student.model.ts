@@ -2,13 +2,13 @@ import validator from 'validator';
 
 import { Schema, model } from 'mongoose';
 import {
-  Gurdian,
-  LocalGurdian,
-  Student,
-  UserName,
-} from './student/student.interface';
+  TGurdian,
+  TLocalGurdian,
+  TStudent,
+  TUserName,
+} from './student.interface';
 
-const userNameSchema = new Schema<UserName>({
+const userNameSchema = new Schema<TUserName>({
   firstName: {
     type: String,
     trim: true,
@@ -37,7 +37,7 @@ const userNameSchema = new Schema<UserName>({
   },
 });
 
-const guardianSchema = new Schema<Gurdian>({
+const guardianSchema = new Schema<TGurdian>({
   fatherName: { type: String, required: [true, 'Father Name is required'] },
   fatherOcupation: {
     type: String,
@@ -58,7 +58,7 @@ const guardianSchema = new Schema<Gurdian>({
   },
 });
 
-const localGurdianSchema = new Schema<LocalGurdian>({
+const localGurdianSchema = new Schema<TLocalGurdian>({
   name: { type: String, required: [true, 'Local Guardian Name is required'] },
   occupation: {
     type: String,
@@ -75,11 +75,22 @@ const localGurdianSchema = new Schema<LocalGurdian>({
 });
 
 // 2. Create a Schema corresponding to the document interface.
-const studentSchema = new Schema<Student>({
+const studentSchema = new Schema<TStudent>({
   id: {
     type: String,
     required: [true, 'Student ID is required'],
     unique: true,
+  },
+  user: {
+    type: Schema.Types.ObjectId,
+    required: [true, 'User ID is required'],
+    unique: true,
+    ref: 'User',
+  },
+  password: {
+    type: String,
+    required: [true, 'ID is required'],
+    maxlength: [20, 'pass cant not be more 20 character  '],
   },
   name: {
     type: userNameSchema,
@@ -98,10 +109,10 @@ const studentSchema = new Schema<Student>({
     required: [true, 'Email is required'],
     unique: true,
 
-    /* validate: {
+    validate: {
       validator: (value: string) => validator.isEmail(value),
       message: '{VALUE} is not a valid email type',
-    }, */
+    },
   },
   dateOfBirth: { type: String, required: [true, 'Date of Birth is required'] },
   presentAddress: {
@@ -133,4 +144,4 @@ const studentSchema = new Schema<Student>({
   },
 });
 
-export const StudentModel = model<Student>('Student', studentSchema);
+export const StudentModel = model<TStudent>('Student', studentSchema);

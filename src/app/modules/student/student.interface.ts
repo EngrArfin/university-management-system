@@ -1,10 +1,12 @@
-export type UserName = {
+import { Types } from 'mongoose';
+
+export type TUserName = {
   firstName: string;
   middleName: string;
   lastName: string;
 };
 
-export type Gurdian = {
+export type TGurdian = {
   fatherName: string;
   fatherOcupation: string;
   fatherContractNo: string;
@@ -13,16 +15,18 @@ export type Gurdian = {
   mothherContractNo: string;
 };
 
-export type LocalGurdian = {
+export type TLocalGurdian = {
   name: string;
   occupation: string;
   contractNo: string;
   address: string;
 };
 
-export type Student = {
+export type TStudent = {
   id: string;
-  name: UserName;
+  user: Types.ObjectId;
+  password: string;
+  name: TUserName;
   gender: 'male' | 'female';
   email: string;
   contractNo: string;
@@ -31,8 +35,8 @@ export type Student = {
   bloodGroup?: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
   presentAddress: string;
   permanentAddress: string;
-  guardian: Gurdian;
-  localGurdiant: LocalGurdian;
+  guardian: TGurdian;
+  localGurdiant: TLocalGurdian;
   profileImg: string;
   isActive: 'active' | 'blocked';
 };
