@@ -1,5 +1,4 @@
 import validator from 'validator';
-
 import { Schema, model } from 'mongoose';
 import {
   TGurdian,
@@ -75,73 +74,134 @@ const localGurdianSchema = new Schema<TLocalGurdian>({
 });
 
 // 2. Create a Schema corresponding to the document interface.
-const studentSchema = new Schema<TStudent>({
-  id: {
-    type: String,
-    required: [true, 'Student ID is required'],
-    unique: true,
-  },
-  user: {
-    type: Schema.Types.ObjectId,
-    required: [true, 'User ID is required'],
-    unique: true,
-    ref: 'User',
-  },
-  password: {
-    type: String,
-    required: [true, 'ID is required'],
-    maxlength: [20, 'pass cant not be more 20 character  '],
-  },
-  name: {
-    type: userNameSchema,
-    required: [true, 'Student Name is required'],
-  },
-  gender: {
-    type: String,
-    enum: {
-      values: ['male', 'female', 'other'],
-      message: '{VALUE} is not valid',
+const studentSchema = new Schema<TStudent>(
+  {
+    id: {
+      type: String,
+      required: [true, 'Student ID is required'],
+      unique: true,
     },
-    required: [true, 'Gender is required'],
-  },
-  email: {
-    type: String,
-    required: [true, 'Email is required'],
-    unique: true,
+    user: {
+      type: Schema.Types.ObjectId,
+      required: [true, 'User ID is required'],
+      unique: true,
+      ref: 'User',
+    },
+    /* password: {
+      type: String,
+      required: [true, 'ID is required'],
+      maxlength: [20, 'pass cant not be more 20 character  '],
+    }, */
 
-    validate: {
-      validator: (value: string) => validator.isEmail(value),
-      message: '{VALUE} is not a valid email type',
+    name: {
+      type: userNameSchema,
+      required: [true, 'Student Name is required'],
     },
+    gender: {
+      type: String,
+      enum: {
+        values: ['male', 'female', 'other'],
+        message: '{VALUE} is not valid',
+      },
+      required: [true, 'Gender is required'],
+    },
+    email: {
+      type: String,
+      required: [true, 'Email is required'],
+      unique: true,
+
+      validate: {
+        validator: (value: string) => validator.isEmail(value),
+        message: '{VALUE} is not a valid email type',
+      },
+    },
+    dateOfBirth: {
+      type: String,
+      required: [true, 'Date of Birth is required'],
+    },
+    presentAddress: {
+      type: String,
+      required: [true, 'Present Address is required'],
+    },
+    permanentAddress: {
+      type: String,
+      required: [true, 'Permanent Address is required'],
+    },
+    contractNo: {
+      type: String,
+      required: [true, 'Contact Number is required'],
+    },
+    emergencyContractNo: {
+      type: String,
+      required: [true, 'Emergency Contact Number is required'],
+    },
+    guardian: {
+      type: guardianSchema,
+      required: [true, 'Guardian details are required'],
+    },
+    localGurdiant: {
+      type: localGurdianSchema,
+      required: [true, 'Local Guardian details are required'],
+    },
+    profileImg: { type: String },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
+    /* isActive: {
+  type: String,
+  enum: ['active', 'blocked'],
+  default: 'active',
+}, */
   },
-  dateOfBirth: { type: String, required: [true, 'Date of Birth is required'] },
-  presentAddress: {
-    type: String,
-    required: [true, 'Present Address is required'],
-  },
-  permanentAddress: {
-    type: String,
-    required: [true, 'Permanent Address is required'],
-  },
-  contractNo: { type: String, required: [true, 'Contact Number is required'] },
-  emergencyContractNo: {
-    type: String,
-    required: [true, 'Emergency Contact Number is required'],
-  },
-  guardian: {
-    type: guardianSchema,
-    required: [true, 'Guardian details are required'],
-  },
-  localGurdiant: {
-    type: localGurdianSchema,
-    required: [true, 'Local Guardian details are required'],
-  },
-  profileImg: { type: String },
-  isActive: {
-    type: String,
-    enum: ['active', 'blocked'],
-    default: 'active',
-  },
+
+  {
+    toJSON: {
+      virtuals: true,
+    },
+  }
+);
+
+studentSchema.virtual('fullName').get(function () {
+  return this.name.firstName + this.name.middleName + this.name.lastName;
 });
 
-export const StudentModel = model<TStudent>('Student', studentSchema);
+/* //pre save module  /hook 
+studentSchema.pre('save', async function (next) {
+  const user = this;
+  user.password = await bcrypt.hash(
+    user.password,
+    Number(config.bcrypt_salt_rounds)
+  );
+  next();
+});
+// post save middleware  /hook
+studentSchema.post('save', function (doc, next) {
+  doc.password = '';
+  next();
+}); */
+
+// Queary middleware
+studentSchema.pre('find', function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+studentSchema.pre('findOne', function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+studentSchema.pre('aggregate', function (next) {
+  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
+  next();
+});
+
+//create a castom static method
+
+studentSchema.static.isUserExists = async function (id: string) {
+  const existingUser = await Student.findOne({ id });
+  return existingUser;
+};
+
+export const Student = model<TStudent, StudentModel>('Student', studentSchema);

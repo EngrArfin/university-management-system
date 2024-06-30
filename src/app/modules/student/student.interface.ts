@@ -38,5 +38,5 @@ export type TStudent = {
   guardian: TGurdian;
   localGurdiant: TLocalGurdian;
   profileImg: string;
-  isActive: 'active' | 'blocked';
+  isDeleted: boolean;
 };
