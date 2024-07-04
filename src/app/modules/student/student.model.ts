@@ -116,7 +116,7 @@ const studentSchema = new Schema<TStudent>(
       },
     },
     dateOfBirth: {
-      type: String,
+      type: Date,
       required: [true, 'Date of Birth is required'],
     },
     presentAddress: {

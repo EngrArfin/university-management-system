@@ -40,8 +40,22 @@ const deleteStudent = catchAsync(async (req, res) => {
   });
 });
 
+// New createStudent method
+const createStudent = catchAsync(async (req, res) => {
+  const studentData = req.body;
+  const result = await StudentServices.createStudentInDB(studentData);
+
+  sendResponse(res, {
+    statusCode: httpStatus.CREATED,
+    success: true,
+    message: 'Student is created successfully',
+    data: result,
+  });
+});
+
 export const StudentControllers = {
   getSingleStudent,
   getAllStudents,
   deleteStudent,
+  createStudent,
 };

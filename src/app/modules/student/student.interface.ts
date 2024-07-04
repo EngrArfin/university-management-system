@@ -31,7 +31,7 @@ export type TStudent = {
   email: string;
   contractNo: string;
   emergencyContractNo: string;
-  dateOfBirth?: string;
+  dateOfBirth?: Date;
   bloodGroup?: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
   presentAddress: string;
   permanentAddress: string;
